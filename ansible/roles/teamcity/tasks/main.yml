@@ -1,0 +1,15 @@
+- name: Pull TeamCity docker image
+  docker_image:
+    name: jetbrains/teamcity-server
+
+- name: Start TeamCity containter
+  docker_container:
+    name: teamcity-server-instance
+    image: jetbrains/teamcity-server
+    exposed_ports:
+      - 8111
+    published_ports:
+      - 8111:8111
+    volumes:
+      - /data:/data/teamcity_server/datadir
+      - /logs:/opt/teamcity/logs

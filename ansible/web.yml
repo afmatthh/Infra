@@ -1,0 +1,6 @@
+- name: Install server
+  hosts: all
+  become: True
+  roles:
+    - basic
+    - web
