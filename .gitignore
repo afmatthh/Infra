@@ -10,3 +10,6 @@
 
 # Private access keys
 *.pem
+
+# Retry files ansible
+*.retry
