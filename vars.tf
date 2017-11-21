@@ -1,8 +1,5 @@
 variable "aws_access_key" {}
 variable "aws_secret_key" {}
-variable "aws_securitygroupid" {
-  type = "list"
-}
 variable "aws_keyname" {}
 variable "private_key_file" {}
 variable "region" {
@@ -21,13 +18,12 @@ variable "size" {
     "web"      = "t2.small"
   }
 }
-variable "web_ips" {
-  default = {
-    "0" = "10.24.8.11"
-    "1" = "10.24.8.12"
-    "2" = "10.24.8.13"
-  }
+variable "dev_web_ips" {
+  type = "map"
 }
 variable "cmd_ips" {
   type = "list"
 }
+variable "network" {}
+variable "network_mgmt" {}
+variable "network_dev" {}

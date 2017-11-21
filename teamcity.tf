@@ -5,7 +5,7 @@ provider "aws" {
 }
 
 resource "aws_vpc" "main" {
-  cidr_block           = "10.24.0.0/16"
+  cidr_block           = "${var.network}"
   enable_dns_hostnames = true
 
   tags {
@@ -66,7 +66,7 @@ resource "aws_security_group" "web" {
     from_port       = 22
     to_port         = 22
     protocol        = "tcp"
-    cidr_blocks     = ["10.24.1.0/24"]
+    cidr_blocks     = ["${var.network_mgmt}"]
   }
 
   ingress {
@@ -86,7 +86,7 @@ resource "aws_security_group" "web" {
 
 resource "aws_subnet" "mgmt" {
   vpc_id                  = "${aws_vpc.main.id}"
-  cidr_block              = "10.24.1.0/24"
+  cidr_block              = "${var.network_mgmt}"
   map_public_ip_on_launch = "True"
 
   tags {
@@ -96,7 +96,7 @@ resource "aws_subnet" "mgmt" {
 
 resource "aws_subnet" "dev" {
   vpc_id                  = "${aws_vpc.main.id}"
-  cidr_block              = "10.24.8.0/24"
+  cidr_block              = "${var.network_dev}"
   map_public_ip_on_launch = "True"
 
   tags {
@@ -109,6 +109,10 @@ resource "aws_instance" "TeamCity" {
   instance_type          = "${lookup(var.size, "teamcity")}"
   key_name               = "${var.aws_keyname}"
   subnet_id              = "${aws_subnet.mgmt.id}"
+
+  tags {
+    Name                 = "TeamCity"
+  }
 
   provisioner "remote-exec" {
     inline = ["ls"]
@@ -125,13 +129,17 @@ resource "aws_instance" "TeamCity" {
 }
 
 resource "aws_instance" "DevWeb" {
-  count                  = "3"
+  count                  = "5"
   ami                    = "${lookup(var.amis, var.region)}"
   instance_type          = "${lookup(var.size, "web")}"
   key_name               = "${var.aws_keyname}"
   subnet_id              = "${aws_subnet.dev.id}"
   vpc_security_group_ids = ["${aws_security_group.web.id}"]
-  private_ip             = "${lookup(var.web_ips, count.index)}"
+  private_ip             = "${lookup(var.dev_web_ips, count.index)}"
+
+  tags {
+    Name                 = "web${count.index}"
+  }
 
   provisioner "remote-exec" {
     inline = ["ls"]
