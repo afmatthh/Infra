@@ -87,13 +87,13 @@ resource "aws_subnet" "mgmt" {
   }
 }
 
-resource "aws_subnet" "prod" {
+resource "aws_subnet" "dev" {
   vpc_id                  = "${aws_vpc.main.id}"
   cidr_block              = "10.24.8.0/24"
   map_public_ip_on_launch = "True"
 
   tags {
-    Name            = "Prod"
+    Name            = "Dev"
   }
 }
 
@@ -117,13 +117,14 @@ resource "aws_instance" "TeamCity" {
   }
 }
 
-resource "aws_instance" "ProdWeb" {
-  count                  = "2"
+resource "aws_instance" "DevWeb" {
+  count                  = "3"
   ami                    = "${lookup(var.amis, var.region)}"
   instance_type          = "${lookup(var.size, "web")}"
   key_name               = "${var.aws_keyname}"
-  subnet_id              = "${aws_subnet.prod.id}"
+  subnet_id              = "${aws_subnet.dev.id}"
   vpc_security_group_ids = ["${aws_security_group.web.id}"]
+  private_ip             = "${lookup(var.web_ips, count.index)}"
 
   provisioner "remote-exec" {
     inline = ["ls"]

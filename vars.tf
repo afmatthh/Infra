@@ -21,3 +21,10 @@ variable "size" {
     "web"      = "t2.small"
   }
 }
+variable "web_ips" {
+  default = {
+    "0" = "10.24.8.11"
+    "1" = "10.24.8.12"
+    "2" = "10.24.8.13"
+  }
+}
