@@ -28,3 +28,6 @@ variable "web_ips" {
     "2" = "10.24.8.13"
   }
 }
+variable "cmd_ips" {
+  type = "list"
+}

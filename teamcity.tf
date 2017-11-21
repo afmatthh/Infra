@@ -41,14 +41,14 @@ resource "aws_default_security_group" "default" {
     from_port       = 22
     to_port         = 22
     protocol        = "tcp"
-    cidr_blocks     = ["92.33.16.139/32", "94.254.123.168/32","213.64.123.86/32"]
+    cidr_blocks     = "${var.cmd_ips}"
   }
 
   ingress {
     from_port       = 8111
     to_port         = 8111
     protocol        = "tcp"
-    cidr_blocks     = ["92.33.16.139/32", "94.254.123.168/32","213.64.123.86/32"]
+    cidr_blocks     = "${var.cmd_ips}"
   }
 }
 
@@ -66,7 +66,14 @@ resource "aws_security_group" "web" {
     from_port       = 22
     to_port         = 22
     protocol        = "tcp"
-    cidr_blocks     = ["10.24.1.0/24", "92.33.16.139/32", "94.254.123.168/32","213.64.123.86/32"]
+    cidr_blocks     = ["10.24.1.0/24"]
+  }
+
+  ingress {
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    cidr_blocks     = "${var.cmd_ips}"
   }
 
   ingress {
